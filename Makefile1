@@ -1,0 +1,36 @@
+GCC = gcc
+CFLAGS = -g -Wall -Wshadow
+OBJS= mysort.o redirect.o
+HDRS=mysort.h
+
+mysort: $(OBJS) $(HDRS)
+	$(GCC) $(CFLAGS) $(OBJS) -o $@
+
+.c.o:
+	$(GCC) $(CFLAGS) -c $*.c
+
+testinput:mysort
+	./mysort 6 < input/input6 > temp/temp6
+	diff temp/temp6 input/input6
+	./mysort 20 < input/input20 > temp/temp20
+	diff temp/temp20 input/input20
+	./mysort 50 < input/input50 > temp/temp50
+	diff temp/temp50 input/input50
+	./mysort 100 < input/input100 > temp/temp100
+	diff temp/temp100 input/input100
+
+testgen : testgen.c
+	$(GCC) testgen.c -o testgen
+
+inputgen:testgen
+	./testgen 6 > input/input6
+	./testgen 20 >input/input20
+	./testgen 50 > input/input50
+	./testgen 100> input/input100
+	sort -n input/input6 >expected/expected6
+	sort -n input/input20 >expected/expected20
+	sort -n input/input50 >expected/expected50
+	sort -n input/input100 >expected/expected100
+
+clean:
+	/bin/rm -f testgen input/input* expected/expected* temp/temp*
